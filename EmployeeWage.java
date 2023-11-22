@@ -1,6 +1,7 @@
 package EmployeeWage_day2;
 
 import java.util.Random;
+import java.util.Scanner;
 
 public class EmployeeWage{
 
@@ -23,6 +24,9 @@ public class EmployeeWage{
 
         //use case 3
         addPartTimeEmployee();
+
+        //use case 4
+        calculateWagesForMonth();
     }
 
     private static int checkEmployeeAttendance() {
@@ -47,6 +51,40 @@ public class EmployeeWage{
         else{
             System.out.println("Part-time Employee wage: 0");
         }
+    }
+
+     // Use Case 4
+    private static void calculateWagesForMonth() {
+
+       Scanner sc = new Scanner(System.in);
+       int monthlyWage = 0;
+       int working_days=1;
+
+       while(working_days <= WORKING_DAYS_PER_MONTH)
+       {
+          boolean is_fulltime = true;
+
+          System.out.println("Enter 1 for full time and 0 for part time "+"for day "+working_days);
+          int flag = sc.nextInt();
+          if(flag == 0)
+          is_fulltime = false;
+
+          if(is_fulltime)
+          {
+            monthlyWage += WAGE_PER_HOUR * PART_TIME_HOURS; 
+          }
+
+         
+
+          working_days++;
+
+
+
+       }
+
+       System.out.println("Monthly Employee Wage: " + monthlyWage);
+
+       sc.close();
     }
 
 }
