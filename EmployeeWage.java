@@ -27,6 +27,9 @@ public class EmployeeWage{
 
         //use case 4
         calculateWagesForMonth();
+
+        //use case 5
+        calculateWagesTillCondition();
     }
 
     private static int checkEmployeeAttendance() {
@@ -85,6 +88,41 @@ public class EmployeeWage{
        System.out.println("Monthly Employee Wage: " + monthlyWage);
 
        sc.close();
+    }
+
+    // Use Case 5
+    private static void calculateWagesTillCondition() {
+        Scanner sc = new Scanner(System.in);
+        int totalWorkingHours = 0;
+        int totalWorkingDays = 0;
+ 
+        while (totalWorkingHours < MAX_WORKING_HOURS && totalWorkingDays < WORKING_DAYS_PER_MONTH) {
+
+            boolean is_fulltime = true;
+
+          System.out.println("Enter 1 for full time and 0 for part time "+"for day "+totalWorkingDays);
+          int flag = sc.nextInt();
+          if(flag == 0)
+          is_fulltime = false;
+
+          if(is_fulltime)
+          {
+            totalWorkingHours += FULL_DAY_HOURS;
+           
+
+          }
+          else
+          {
+            totalWorkingHours += PART_TIME_HOURS;
+          }
+           
+            totalWorkingDays++;
+        }
+
+        int totalWage = WAGE_PER_HOUR * totalWorkingHours;
+        System.out.println("Wages till condition: " + totalWage);
+
+        sc.close();
     }
 
 }
