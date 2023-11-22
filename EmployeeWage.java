@@ -15,12 +15,23 @@ public class EmployeeWage{
 
         int attendance = checkEmployeeAttendance();
         System.out.println("Employee is " + (attendance == 1 ? "Present" : "Absent"));
+
+        if(checkEmployeeAttendance() == 1)
+            calculateDailyWage();
+        else
+            System.out.println("Daily Employee Wage: 0");
     }
 
     private static int checkEmployeeAttendance() {
         Random random = new Random();
         int attendance = random.nextInt(2); // 0 for absent, 1 for present
         return attendance;
+    }
+
+    // Use Case 2
+    private static void calculateDailyWage() {
+        int dailyWage = WAGE_PER_HOUR * FULL_DAY_HOURS;
+        System.out.println("Daily Employee Wage: " + dailyWage);
     }
 
 }
