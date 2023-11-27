@@ -3,16 +3,57 @@ package EmployeeWage_day2;
 import java.util.Random;
 import java.util.Scanner;
 
+class EmpWageBuilder {
+    private final int WAGE_PER_HOUR;
+    private final int FULL_DAY_HOURS;
+    private final int PART_TIME_HOURS;
+    private final int WORKING_DAYS_PER_MONTH;
+    private final int MAX_WORKING_HOURS;
+
+    private int totalWage;
+
+    public EmpWageBuilder(int wagePerHour, int fullDayHours, int partTimeHours, int workingDaysPerMonth,
+            int maxWorkingHours) {
+        this.WAGE_PER_HOUR = wagePerHour;
+        this.FULL_DAY_HOURS = fullDayHours;
+        this.PART_TIME_HOURS = partTimeHours;
+        this.WORKING_DAYS_PER_MONTH = workingDaysPerMonth;
+        this.MAX_WORKING_HOURS = maxWorkingHours;
+    }
+
+    public void calculateTotalWage() {
+        int totalWorkingHours = 0;
+        int totalWorkingDays = 0;
+
+        while (totalWorkingHours < MAX_WORKING_HOURS && totalWorkingDays < WORKING_DAYS_PER_MONTH) {
+            boolean isFullTime = checkEmployeeAttendance() == 1;
+
+            if (isFullTime) {
+                totalWorkingHours += FULL_DAY_HOURS;
+            } else {
+                totalWorkingHours += PART_TIME_HOURS;
+            }
+
+            totalWorkingDays++;
+        }
+
+        totalWage = WAGE_PER_HOUR * totalWorkingHours;
+    }
+
+    public int getTotalWage() {
+        return totalWage;
+    }
+
+    private int checkEmployeeAttendance() {
+        Random random = new Random();
+        return random.nextInt(2); // 0 for absent, 1 for present
+    }
+}
+
 public class EmployeeWage {
 
-    // private static final int WAGE_PER_HOUR = 20;
-    // private static final int FULL_DAY_HOURS = 8;
-    // private static final int PART_TIME_HOURS = 4;
-    // private static final int WORKING_DAYS_PER_MONTH = 20;
-    // private static final int MAX_WORKING_HOURS = 100;
-
     public static int total_company;
-    
+
     public static void main(String[] args) {
 
         // Use case 1: printing welcome msg
@@ -185,40 +226,26 @@ public class EmployeeWage {
     private static void calculateWagesTillCondition(int[][] company_info) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Enter company number between 1 to " + total_company + ") :");
-        int company = sc.nextInt();
+        System.out.println("Calculate wages for each comapany: ");
 
-        int totalWorkingHours = 0;
-        int totalWorkingDays = 0;
+        // Use case 9: Create an array of EmpWageBuilder instances for each company
+        EmpWageBuilder[] empWage = new EmpWageBuilder[total_company];
 
-        // Use case 8: getting company info and calculation of wage for that company
-        final int MAX_WORKING_HOURS = company_info[company - 1][4];
-        final int WORKING_DAYS_PER_MONTH = company_info[company - 1][3];
-        final int FULL_DAY_HOURS = company_info[company - 1][1];
-        final int PART_TIME_HOURS = company_info[company - 1][2];
-        final int WAGE_PER_HOUR = company_info[company - 1][0];
-
-        while (totalWorkingHours < MAX_WORKING_HOURS && totalWorkingDays < WORKING_DAYS_PER_MONTH) {
-
-            boolean is_fulltime = true;
-
-            System.out.println("Enter 1 for full time and 0 for part time " + "for day " + totalWorkingDays);
-            int flag = sc.nextInt();
-            if (flag == 0)
-                is_fulltime = false;
-
-            if (is_fulltime) {
-                totalWorkingHours += FULL_DAY_HOURS;
-
-            } else {
-                totalWorkingHours += PART_TIME_HOURS;
-            }
-
-            totalWorkingDays++;
+        for (int i = 0; i < total_company; i++) {
+            empWage[i] = new EmpWageBuilder(
+                    company_info[i][0],
+                    company_info[i][1],
+                    company_info[i][2],
+                    company_info[i][3],
+                    company_info[i][4]);
         }
 
-        int totalWage = WAGE_PER_HOUR * totalWorkingHours;
-        System.out.println("Wages till condition: " + totalWage);
+        // Use Case 9: Calculate and Save Total Wage for Each Company
+        for (int i = 0; i < total_company; i++) {
+            // calculate wage for ith company
+            empWage[i].calculateTotalWage();
+            System.out.println("Total Wage for Company " + (i + 1) + ": " + empWage[i].getTotalWage());
+        }
 
         sc.close();
     }
