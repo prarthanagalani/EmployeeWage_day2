@@ -3,7 +3,14 @@ package EmployeeWage_day2;
 import java.util.Random;
 import java.util.Scanner;
 
+// interface
+interface EmpWageInterface {
+    void addCompanyEmpWage(int index, CompanyEmpWage companyEmpWage);
 
+    void calculateTotalWages();
+}
+
+// for initializing all necessary info
 class CompanyEmpWage {
     public final String companyName;
     public final int WAGE_PER_HOUR;
@@ -14,7 +21,8 @@ class CompanyEmpWage {
 
     public int totalWage;
 
-    public CompanyEmpWage(String companyName, int wagePerHour, int fullDayHours, int partTimeHours, int workingDaysPerMonth, int maxWorkingHours) {
+    public CompanyEmpWage(String companyName, int wagePerHour, int fullDayHours, int partTimeHours,
+            int workingDaysPerMonth, int maxWorkingHours) {
         this.companyName = companyName;
         this.WAGE_PER_HOUR = wagePerHour;
         this.FULL_DAY_HOURS = fullDayHours;
@@ -25,31 +33,36 @@ class CompanyEmpWage {
 }
 
 // will calculate wages for multiple companies
-class EmpWageBuilder {
+class EmpWageBuilder implements EmpWageInterface {
     private final CompanyEmpWage[] companyEmpWages;
-    
+
     public EmpWageBuilder(int totalCompanies) {
         this.companyEmpWages = new CompanyEmpWage[totalCompanies];
     }
 
+    // overriden methods from interface
+    @Override
     public void addCompanyEmpWage(int index, CompanyEmpWage companyEmpWage) {
         this.companyEmpWages[index] = companyEmpWage;
-    } 
-    
+    }
+
     // for each company
+    @Override
     public void calculateTotalWages() {
         for (int i = 0; i < companyEmpWages.length; i++) {
             calculateTotalWage(companyEmpWages[i]);
-            System.out.println("Total Wage for Company " + companyEmpWages[i].companyName + ": " + companyEmpWages[i].totalWage);
+            System.out.println(
+                    "Total Wage for Company " + companyEmpWages[i].companyName + ": " + companyEmpWages[i].totalWage);
         }
     }
-    
+
     // for specific company
     private void calculateTotalWage(CompanyEmpWage companyEmpWage) {
         int totalWorkingHours = 0;
         int totalWorkingDays = 0;
 
-        while (totalWorkingHours < companyEmpWage.MAX_WORKING_HOURS && totalWorkingDays < companyEmpWage.WORKING_DAYS_PER_MONTH) {
+        while (totalWorkingHours < companyEmpWage.MAX_WORKING_HOURS
+                && totalWorkingDays < companyEmpWage.WORKING_DAYS_PER_MONTH) {
             boolean isFullTime = checkEmployeeAttendance() == 1;
 
             if (isFullTime) {
@@ -63,7 +76,7 @@ class EmpWageBuilder {
 
         companyEmpWage.totalWage = companyEmpWage.WAGE_PER_HOUR * totalWorkingHours;
 
-        System.out.println("Total Wage for company "+companyEmpWage);
+        System.out.println("Total Wage for company " + companyEmpWage.companyName);
     }
 
     private int checkEmployeeAttendance() {
@@ -72,7 +85,6 @@ class EmpWageBuilder {
     }
 }
 
- 
 public class EmployeeWage {
 
     public static int total_company;
@@ -88,9 +100,9 @@ public class EmployeeWage {
         System.out.println("Enter total number of companies: ");
         total_company = sc.nextInt();
 
-       
+        // EmpWageBuilder empWageBuilder = new EmpWageBuilder(total_company);
 
-        EmpWageBuilder empWageBuilder = new EmpWageBuilder(total_company);
+        EmpWageInterface empWageBuilder = new EmpWageBuilder(total_company);
 
         for (int i = 0; i < total_company; i++) {
             System.out.println("Enter company name for company " + (i + 1));
@@ -99,7 +111,6 @@ public class EmployeeWage {
             System.out.println("Enter WAGE_PER_HOUR for company " + (i + 1));
             int wagePerHour = sc.nextInt();
 
-            
             System.out.println("Enter FULL_DAY_HOURS for company " + (i + 1));
             int fullDayHours = sc.nextInt();
 
@@ -115,18 +126,20 @@ public class EmployeeWage {
             // Create CompanyEmpWage object and add to EmpWageBuilder
             CompanyEmpWage companyEmpWage = new CompanyEmpWage(
                     companyName,
-                    wagePerHour,fullDayHours, partTimeHours, workingDaysPerMonth, maxWorkingHours
-                    
+                    wagePerHour, fullDayHours, partTimeHours, workingDaysPerMonth, maxWorkingHours
+
             );
 
             empWageBuilder.addCompanyEmpWage(i, companyEmpWage);
         }
 
-        // Use Case 10: Calculate and Print Total Wages for Each Company
-        empWageBuilder.calculateTotalWages();
+        // // Use Case 10: Calculate and Print Total Wages for Each Company
+        // empWageBuilder.calculateTotalWages();
 
+        // Use Case 11: Implementing Interface Approach
+        ((EmpWageBuilder) empWageBuilder).calculateTotalWages();
 
-       sc.close();
+        sc.close();
     }
 
 }
