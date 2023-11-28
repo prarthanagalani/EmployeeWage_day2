@@ -10,6 +10,8 @@ interface EmpWageInterface {
     void addCompanyEmpWage(CompanyEmpWage companyEmpWage);
 
     void calculateTotalWages();
+
+    int getTotalWageByCompany(String companyName); // New method for Use Case 14
 }
 
 // for initializing all necessary info
@@ -90,7 +92,18 @@ class EmpWageBuilder implements EmpWageInterface {
 
     private int checkEmployeeAttendance() {
         Random random = new Random();
+       
         return random.nextInt(2); // 0 for absent, 1 for present
+    }
+   
+    @Override
+    public int getTotalWageByCompany(String companyName) {
+        for (CompanyEmpWage companyEmpWage : companyEmpWages) {
+            if (companyEmpWage.companyName.equals(companyName)) {
+                return companyEmpWage.totalWage;
+            }
+        }
+        return 0; // Return 0 if the company is not found
     }
 }
 
@@ -145,6 +158,12 @@ public class EmployeeWage {
 
         // Use Case 13: Calculate and Print Daily Wages for Each Company using ArrayList
         empWageBuilder.calculateTotalWages();
+
+        // Use Case 14: query total wage for a specific company
+        System.out.println("Enter the company name to get the total wage: ");
+        String company = sc.next();
+        int totalWage = empWageBuilder.getTotalWageByCompany(company);
+        System.out.println("Total Wage for Company " + company + ": " + totalWage);
 
         sc.close();
     }
