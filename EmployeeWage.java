@@ -2,10 +2,12 @@ package EmployeeWage_day2;
 
 import java.util.Random;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 // interface
 interface EmpWageInterface {
-    void addCompanyEmpWage(int index, CompanyEmpWage companyEmpWage);
+    void addCompanyEmpWage(CompanyEmpWage companyEmpWage);
 
     void calculateTotalWages();
 }
@@ -34,25 +36,25 @@ class CompanyEmpWage {
 
 // will calculate wages for multiple companies
 class EmpWageBuilder implements EmpWageInterface {
-    private final CompanyEmpWage[] companyEmpWages;
+    private final List<CompanyEmpWage> companyEmpWages;
 
-    public EmpWageBuilder(int totalCompanies) {
-        this.companyEmpWages = new CompanyEmpWage[totalCompanies];
+    public EmpWageBuilder() {
+        this.companyEmpWages = new ArrayList<>();
     }
 
     // overriden methods from interface
     @Override
-    public void addCompanyEmpWage(int index, CompanyEmpWage companyEmpWage) {
-        this.companyEmpWages[index] = companyEmpWage;
+    public void addCompanyEmpWage(CompanyEmpWage companyEmpWage) {
+        this.companyEmpWages.add(companyEmpWage);
     }
 
     // for each company
     @Override
     public void calculateTotalWages() {
-        for (int i = 0; i < companyEmpWages.length; i++) {
-            calculateTotalWage(companyEmpWages[i]);
-            System.out.println(
-                    "Total Wage for Company " + companyEmpWages[i].companyName + ": " + companyEmpWages[i].totalWage);
+        for (CompanyEmpWage companyEmpWage : companyEmpWages) {
+            calculateTotalWage(companyEmpWage);
+            System.out
+                    .println("Total Wage for Company " + companyEmpWage.companyName + ": " + companyEmpWage.totalWage);
         }
     }
 
@@ -102,7 +104,7 @@ public class EmployeeWage {
 
         // EmpWageBuilder empWageBuilder = new EmpWageBuilder(total_company);
 
-        EmpWageInterface empWageBuilder = new EmpWageBuilder(total_company);
+        EmpWageInterface empWageBuilder = new EmpWageBuilder();
 
         for (int i = 0; i < total_company; i++) {
             System.out.println("Enter company name for company " + (i + 1));
@@ -129,15 +131,13 @@ public class EmployeeWage {
                     wagePerHour, fullDayHours, partTimeHours, workingDaysPerMonth, maxWorkingHours
 
             );
-
-            empWageBuilder.addCompanyEmpWage(i, companyEmpWage);
+            
+            // Add the CompanyEmpWage object to the EmpWageBuilder using the EmpWageInterface
+            ((EmpWageBuilder) empWageBuilder).addCompanyEmpWage(companyEmpWage);
         }
 
-        // // Use Case 10: Calculate and Print Total Wages for Each Company
-        // empWageBuilder.calculateTotalWages();
-
-        // Use Case 11: Implementing Interface Approach
-        ((EmpWageBuilder) empWageBuilder).calculateTotalWages();
+        // Use Case 12: Calculate and Print Total Wages for Each Company using ArrayList
+        empWageBuilder.calculateTotalWages();
 
         sc.close();
     }
