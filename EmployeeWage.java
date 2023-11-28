@@ -22,6 +22,7 @@ class CompanyEmpWage {
     public final int MAX_WORKING_HOURS;
 
     public int totalWage;
+    public List<Integer> dailyWages;
 
     public CompanyEmpWage(String companyName, int wagePerHour, int fullDayHours, int partTimeHours,
             int workingDaysPerMonth, int maxWorkingHours) {
@@ -31,6 +32,7 @@ class CompanyEmpWage {
         this.PART_TIME_HOURS = partTimeHours;
         this.WORKING_DAYS_PER_MONTH = workingDaysPerMonth;
         this.MAX_WORKING_HOURS = maxWorkingHours;
+        this.dailyWages = new ArrayList<>();
     }
 }
 
@@ -55,6 +57,8 @@ class EmpWageBuilder implements EmpWageInterface {
             calculateTotalWage(companyEmpWage);
             System.out
                     .println("Total Wage for Company " + companyEmpWage.companyName + ": " + companyEmpWage.totalWage);
+            System.out
+                    .println("Daily Wage for Company " + companyEmpWage.companyName + ": " + companyEmpWage.dailyWages);
         }
     }
 
@@ -67,19 +71,22 @@ class EmpWageBuilder implements EmpWageInterface {
                 && totalWorkingDays < companyEmpWage.WORKING_DAYS_PER_MONTH) {
             boolean isFullTime = checkEmployeeAttendance() == 1;
 
+            int dailyWage;
             if (isFullTime) {
                 totalWorkingHours += companyEmpWage.FULL_DAY_HOURS;
+                dailyWage = companyEmpWage.FULL_DAY_HOURS * companyEmpWage.WAGE_PER_HOUR;
             } else {
                 totalWorkingHours += companyEmpWage.PART_TIME_HOURS;
+                dailyWage = companyEmpWage.PART_TIME_HOURS * companyEmpWage.WAGE_PER_HOUR;
             }
 
             totalWorkingDays++;
+            companyEmpWage.dailyWages.add(dailyWage);
         }
 
         companyEmpWage.totalWage = companyEmpWage.WAGE_PER_HOUR * totalWorkingHours;
-
-        System.out.println("Total Wage for company " + companyEmpWage.companyName);
     }
+
 
     private int checkEmployeeAttendance() {
         Random random = new Random();
@@ -136,7 +143,7 @@ public class EmployeeWage {
             ((EmpWageBuilder) empWageBuilder).addCompanyEmpWage(companyEmpWage);
         }
 
-        // Use Case 12: Calculate and Print Total Wages for Each Company using ArrayList
+        // Use Case 13: Calculate and Print Daily Wages for Each Company using ArrayList
         empWageBuilder.calculateTotalWages();
 
         sc.close();
